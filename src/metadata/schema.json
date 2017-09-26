@@ -1,0 +1,4585 @@
+{
+  "package": "500px",
+  "tagline": "500px API",
+  "description": "500px API provides programmatic access to 500px functionality and content.",
+  "image": "https:\/\/logo.clearbit.com\/500px.com",
+  "repo": "https:\/\/github.com\/RapidSoftwareSolutions\/Marketplace-500px-Package",
+  "keywords": [
+    "API",
+    "photo",
+    "500px",
+    "photoes"
+  ],
+  "accounts": {
+    "domain": "500px.com\/",
+    "credentials": [
+      "apiKey",
+      "apiSecret"
+    ]
+  },
+  "steps":[
+    "Browse to https://500px.com",
+    "Register or log in",
+    "Create new application at https://500px.com/settings/applications",
+    "User getRequestToken and getAccessToken to generate credentials"
+  ],
+  "blocks": [
+    {
+      "name": "getRequestToken",
+      "description": "Step 1 of OAuth authorization",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/oauth\/request_token",
+        "method": "post",
+        "requestParameters": [
+          {
+            "type": "form_params",
+            "parameters": []
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "getAccessToken",
+      "description": "Step 2 of OAuth authorization",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The requestToken obtained from previous step",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The requestTokenSecret obtainedfrom previous step ",
+          "required": true
+        },
+        {
+          "name": "username",
+          "type": "String",
+          "info": "Username of the user",
+          "required": true,
+          "vendorSchema": {
+            "name": "x_auth_username"
+          }
+        },
+        {
+          "name": "password",
+          "type": "String",
+          "info": "Pasword of the user",
+          "required": true,
+          "vendorSchema": {
+            "name": "x_auth_password"
+          }
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/oauth\/access_token",
+        "method": "post",
+        "requestParameters": [
+          {
+            "type": "form_params",
+            "parameters": [
+              "x_auth_password",
+              "x_auth_username"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "listPhotos",
+      "description": "Returns a listing of twenty (up to one hundred) photos for a specified photo stream.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "feature",
+          "type": "Select",
+          "options": [
+            "popular",
+            "highest_rated",
+            "upcoming",
+            "editors",
+            "fresh_today",
+            "fresh_yesterday",
+            "fresh_week",
+            "user",
+            "user_friends"
+          ],
+          "info": "Photo stream to be retrieved. Default fresh_today. All per-user streams require a user_id parameter",
+          "required": true
+        },
+        {
+          "name": "userIds",
+          "type": "List",
+          "structure": {
+            "name": "userId",
+            "type": "String",
+            "info": "Single user Id"
+          },
+          "info": "Id of the user",
+          "required": false,
+          "vendorSchema": {
+            "name": "user_id",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "includeCategories",
+          "type": "List",
+          "structure": {
+            "name": "category",
+            "type": "String",
+            "info": "Single category"
+          },
+          "info": "Categories to return photos from",
+          "required": false,
+          "vendorSchema": {
+            "name": "only",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "excludeCategories",
+          "type": "List",
+          "structure": {
+            "name": "category",
+            "type": "String",
+            "info": "Single category"
+          },
+          "info": "Exclude categories to return photos from",
+          "required": false,
+          "vendorSchema": {
+            "name": "exclude",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "sort",
+          "type": "Select",
+          "options": [
+            "created_at",
+            "rating",
+            "highest_rating",
+            "times_viewed",
+            "votes_count",
+            "comments_count",
+            "taken_at"
+          ],
+          "info": "Sort photos in the specified order.",
+          "required": false
+        },
+        {
+          "name": "sortDirection",
+          "type": "Select",
+          "options": [
+            "asc",
+            "desc"
+          ],
+          "info": "Control the order of the sorting. You can provide a sortDirection without providing a sort, in which case the default sort for the requested feature will be adjusted.",
+          "required": false,
+          "vendorSchema": {
+            "name": "sort_direction"
+          }
+        },
+        {
+          "name": "page",
+          "type": "Number",
+          "info": "Return a specific page in the photo stream. Page numbering is 1-based.",
+          "required": false
+        },
+        {
+          "name": "perPage",
+          "type": "Number",
+          "info": "The number of results to return. Can not be over 100, default 20.",
+          "required": false,
+          "vendorSchema": {
+            "name": "rpp"
+          }
+        },
+        {
+          "name": "imageSize",
+          "type": "Select",
+          "options": [
+            "1",
+            "2",
+            "3",
+            "100",
+            "200",
+            "440",
+            "600"
+          ],
+          "info": "The photo size(s) to be returned. [list of formats](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#image-urls-and-image-sizes)",
+          "required": false,
+          "vendorSchema": {
+            "name": "image_size"
+          }
+        },
+        {
+          "name": "includeStore",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "If set to 1, returns market infomation about the photo.",
+          "required": false,
+          "vendorSchema": {
+            "name": "include_store"
+          }
+        },
+        {
+          "name": "includeStates",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "If set to 1, returns state of the photo for the currently logged in user and authenticated request.",
+          "required": false,
+          "vendorSchema": {
+            "name": "include_states"
+          }
+        },
+        {
+          "name": "personalizedCategories",
+          "type": "Select",
+          "options": [
+            "true",
+            "false"
+          ],
+          "info": " If set to true, returns photos from personalized categories for the currently logged in user and authenticated request, if personalization is available for the current user.",
+          "required": false,
+          "vendorSchema": {
+            "name": "personalized_categories"
+          }
+        },
+        {
+          "name": "tags",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "If set to 1, returns an array of tags for the photo.",
+          "required": false
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/photos",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": [
+              "user_id",
+              "only",
+              "exclude",
+              "sort",
+              "sort_direction",
+              "page",
+              "rpp",
+              "image_size",
+              "include_store",
+              "include_states",
+              "personalized_categories",
+              "feature",
+              "tags"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "searchPhotosByTerm",
+      "description": "Returns a listing of twenty (up to one hundred) photos from search results for a specified term",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "term",
+          "type": "String",
+          "info": "A keyword to search for.",
+          "required": true
+        },
+        {
+          "name": "includeCategories",
+          "type": "List",
+          "structure": {
+            "name": "category",
+            "type": "String",
+            "info": "Single category"
+          },
+          "info": "Categories to return photos from",
+          "required": false,
+          "vendorSchema": {
+            "name": "only",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "feature",
+          "type": "Select",
+          "options": [
+            "popular",
+            "highest_rated",
+            "upcoming",
+            "editors",
+            "fresh_today",
+            "fresh_yesterday",
+            "fresh_week",
+            "user",
+            "user_friends"
+          ],
+          "info": "Search only certain feature categories",
+          "required": false,
+          "vendorSchema": {
+            "name": "was_featured_type"
+          }
+        },
+        {
+          "name": "excludeCategories",
+          "type": "List",
+          "structure": {
+            "name": "category",
+            "type": "String",
+            "info": "Single category"
+          },
+          "info": "Exclude categories to return photos from",
+          "required": false,
+          "vendorSchema": {
+            "name": "exclude",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "excludeNude",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "Specifically exclude all photos marked as NSFW",
+          "required": false,
+          "vendorSchema": {
+            "name": "exclude_nude"
+          }
+        },
+        {
+          "name": "page",
+          "type": "Number",
+          "info": "Return a specific page in the photo stream. Page numbering is 1-based.",
+          "required": false
+        },
+        {
+          "name": "perPage",
+          "type": "Number",
+          "info": "The number of results to return. Can not be over 100, default 20.",
+          "required": false,
+          "vendorSchema": {
+            "name": "rpp"
+          }
+        },
+        {
+          "name": "tags",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "If set to 1, returns an array of tags for the photo.",
+          "required": false
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Limit your search within photos of the given user.",
+          "required": false,
+          "vendorSchema": {
+            "name": "user_id"
+          }
+        },
+        {
+          "name": "imageSize",
+          "type": "Select",
+          "options": [
+            "1",
+            "2",
+            "3",
+            "100",
+            "200",
+            "440",
+            "600"
+          ],
+          "info": "The photo size(s) to be returned. [list of formats](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#image-urls-and-image-sizes)",
+          "required": false,
+          "vendorSchema": {
+            "name": "image_size"
+          }
+        },
+        {
+          "name": "licenseTypes",
+          "type": "List",
+          "structure": {
+            "name": "licenseType",
+            "type": "Select",
+            "options": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8"
+            ],
+            "info": "License type id"
+          },
+          "info": "[Types of licenses](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#license-types)",
+          "required": false,
+          "vendorSchema": {
+            "name": "license_type",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "sort",
+          "type": "Select",
+          "options": [
+            "_score",
+            "created_at",
+            "rating",
+            "highest_rating",
+            "times_viewed",
+            "votes_count",
+            "comments_count",
+            "taken_at"
+          ],
+          "info": "Sort photos in the specified order.",
+          "required": false
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/photos\/search",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": [
+              "license_type",
+              "image_size",
+              "user_id",
+              "tags",
+              "rpp",
+              "page",
+              "exclude_nude",
+              "exclude",
+              "was_featured_type",
+              "term",
+              "only"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "searchPhotosByTag",
+      "description": "Returns a listing of twenty (up to one hundred) photos from search results for a specified term",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "tag",
+          "type": "String",
+          "info": "A complete tag string to search for.",
+          "required": true
+        },
+        {
+          "name": "includeCategories",
+          "type": "List",
+          "structure": {
+            "name": "category",
+            "type": "String",
+            "info": "Single category"
+          },
+          "info": "Categories to return photos from",
+          "required": false,
+          "vendorSchema": {
+            "name": "only",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "feature",
+          "type": "Select",
+          "options": [
+            "popular",
+            "highest_rated",
+            "upcoming",
+            "editors",
+            "fresh_today",
+            "fresh_yesterday",
+            "fresh_week",
+            "user",
+            "user_friends"
+          ],
+          "info": "Search only certain feature categories",
+          "required": false,
+          "vendorSchema": {
+            "name": "was_featured_type"
+          }
+        },
+        {
+          "name": "excludeCategories",
+          "type": "List",
+          "structure": {
+            "name": "category",
+            "type": "String",
+            "info": "Single category"
+          },
+          "info": "Exclude categories to return photos from",
+          "required": false,
+          "vendorSchema": {
+            "name": "exclude",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "excludeNude",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "Specifically exclude all photos marked as NSFW",
+          "required": false,
+          "vendorSchema": {
+            "name": "exclude_nude"
+          }
+        },
+        {
+          "name": "page",
+          "type": "Number",
+          "info": "Return a specific page in the photo stream. Page numbering is 1-based.",
+          "required": false
+        },
+        {
+          "name": "perPage",
+          "type": "Number",
+          "info": "The number of results to return. Can not be over 100, default 20.",
+          "required": false,
+          "vendorSchema": {
+            "name": "rpp"
+          }
+        },
+        {
+          "name": "tags",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "If set to 1, returns an array of tags for the photo.",
+          "required": false
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Limit your search within photos of the given user.",
+          "required": false,
+          "vendorSchema": {
+            "name": "user_id"
+          }
+        },
+        {
+          "name": "imageSize",
+          "type": "Select",
+          "options": [
+            "1",
+            "2",
+            "3",
+            "100",
+            "200",
+            "440",
+            "600"
+          ],
+          "info": "The photo size(s) to be returned. [list of formats](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#image-urls-and-image-sizes)",
+          "required": false,
+          "vendorSchema": {
+            "name": "image_size"
+          }
+        },
+        {
+          "name": "licenseTypes",
+          "type": "List",
+          "structure": {
+            "name": "licenseType",
+            "type": "Select",
+            "options": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8"
+            ],
+            "info": "License type id"
+          },
+          "info": "[Types of licenses](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#license-types)",
+          "required": false,
+          "vendorSchema": {
+            "name": "license_type",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "sort",
+          "type": "Select",
+          "options": [
+            "_score",
+            "created_at",
+            "rating",
+            "highest_rating",
+            "times_viewed",
+            "votes_count",
+            "comments_count",
+            "taken_at"
+          ],
+          "info": "Sort photos in the specified order.",
+          "required": false
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/photos\/search",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": [
+              "license_type",
+              "image_size",
+              "user_id",
+              "tags",
+              "rpp",
+              "page",
+              "exclude_nude",
+              "exclude",
+              "was_featured_type",
+              "tag",
+              "only"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "searchPhotosByGeo",
+      "description": "Returns a listing of twenty (up to one hundred) photos from search results for a specified geo",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "geo",
+          "type": "Map",
+          "info": "A geo-location point of the format latitude,longitude",
+          "required": true
+        },
+        {
+          "name": "radius",
+          "type": "String",
+          "info": "A geo-location point radius",
+          "required": true
+        },
+        {
+          "name": "units",
+          "type": "Select",
+          "options": [
+            "km",
+            "mi"
+          ],
+          "info": "Radius units",
+          "required": true
+        },
+        {
+          "name": "includeCategories",
+          "type": "List",
+          "structure": {
+            "name": "category",
+            "type": "String",
+            "info": "Single category"
+          },
+          "info": "Categories to return photos from",
+          "required": false,
+          "vendorSchema": {
+            "name": "only",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "feature",
+          "type": "Select",
+          "options": [
+            "popular",
+            "highest_rated",
+            "upcoming",
+            "editors",
+            "fresh_today",
+            "fresh_yesterday",
+            "fresh_week",
+            "user",
+            "user_friends"
+          ],
+          "info": "Search only certain feature categories",
+          "required": false,
+          "vendorSchema": {
+            "name": "was_featured_type"
+          }
+        },
+        {
+          "name": "excludeCategories",
+          "type": "List",
+          "structure": {
+            "name": "category",
+            "type": "String",
+            "info": "Single category"
+          },
+          "info": "Exclude categories to return photos from",
+          "required": false,
+          "vendorSchema": {
+            "name": "exclude",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "excludeNude",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "Specifically exclude all photos marked as NSFW",
+          "required": false,
+          "vendorSchema": {
+            "name": "exclude_nude"
+          }
+        },
+        {
+          "name": "page",
+          "type": "Number",
+          "info": "Return a specific page in the photo stream. Page numbering is 1-based.",
+          "required": false
+        },
+        {
+          "name": "perPage",
+          "type": "Number",
+          "info": "The number of results to return. Can not be over 100, default 20.",
+          "required": false,
+          "vendorSchema": {
+            "name": "rpp"
+          }
+        },
+        {
+          "name": "tags",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "If set to 1, returns an array of tags for the photo.",
+          "required": false
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Limit your search within photos of the given user.",
+          "required": false,
+          "vendorSchema": {
+            "name": "user_id"
+          }
+        },
+        {
+          "name": "imageSize",
+          "type": "Select",
+          "options": [
+            "1",
+            "2",
+            "3",
+            "100",
+            "200",
+            "440",
+            "600"
+          ],
+          "info": "The photo size(s) to be returned. [list of formats](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#image-urls-and-image-sizes)",
+          "required": false,
+          "vendorSchema": {
+            "name": "image_size"
+          }
+        },
+        {
+          "name": "licenseTypes",
+          "type": "List",
+          "structure": {
+            "name": "licenseType",
+            "type": "Select",
+            "options": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8"
+            ],
+            "info": "License type id"
+          },
+          "info": "[Types of licenses](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#license-types)",
+          "required": false,
+          "vendorSchema": {
+            "name": "license_type",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "sort",
+          "type": "Select",
+          "options": [
+            "_score",
+            "created_at",
+            "rating",
+            "highest_rating",
+            "times_viewed",
+            "votes_count",
+            "comments_count",
+            "taken_at"
+          ],
+          "info": "Sort photos in the specified order.",
+          "required": false
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/photos\/search",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": [
+              "geo",
+              "radius",
+              "units",
+              "license_type",
+              "image_size",
+              "user_id",
+              "tags",
+              "rpp",
+              "page",
+              "exclude_nude",
+              "exclude",
+              "was_featured_type",
+              "term",
+              "only"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "getSinglePhoto",
+      "description": "Returns detailed information of a single photo.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "photoId",
+          "type": "String",
+          "info": "Id of the photo",
+          "required": true
+        },
+        {
+          "name": "imageSize",
+          "type": "Select",
+          "options": [
+            "1",
+            "2",
+            "3",
+            "100",
+            "200",
+            "440",
+            "600"
+          ],
+          "info": "The photo size(s) to be returned. [list of formats](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#image-urls-and-image-sizes)",
+          "required": false,
+          "vendorSchema": {
+            "name": "image_size"
+          }
+        },
+        {
+          "name": "comments",
+          "type": "Select",
+          "options": [
+            "true"
+          ],
+          "info": "Return comments to the photo in the response. Comments are returned in order of creation, 20 entries per page. If omitted no comments will be returned, if present comments will be returned.",
+          "required": false,
+          "vendorSchema": {
+            "name": "comments"
+          }
+        },
+        {
+          "name": "commentsPage",
+          "type": "Number",
+          "info": "Return the specified page from the comments listing. Page numbers are 1-based.",
+          "required": false,
+          "vendorSchema": {
+            "name": "comments_page"
+          }
+        },
+        {
+          "name": "tags",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "If set to 1, returns an array of tags for the photo.",
+          "required": false
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/photos\/{$data['photoId']}",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": [
+              "tags",
+              "comments_page",
+              "comments",
+              "image_size"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "listPhotoComments",
+      "description": "Returns a listing of twenty comments for the photo.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "photoId",
+          "type": "String",
+          "info": "Id of the photo",
+          "required": true
+        },
+        {
+          "name": "nested",
+          "type": "Select",
+          "options": [
+            "true"
+          ],
+          "info": "Include this parameter to return the comments in nested format.",
+          "required": false,
+          "vendorSchema": {
+            "name": "nested"
+          }
+        },
+        {
+          "name": "commentsPage",
+          "type": "Number",
+          "info": "Return the specified page from the comments listing. Page numbers are 1-based.",
+          "required": false,
+          "vendorSchema": {
+            "name": "comments_page"
+          }
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/photos\/{$data['photoId']}\/comments",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": [
+              "nested",
+              "comments_page"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "listPhotoVotes",
+      "description": "Returns all users that had liked this photo.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "photoId",
+          "type": "String",
+          "info": "Id of the photo",
+          "required": true
+        },
+        {
+          "name": "page",
+          "type": "Number",
+          "info": "Return a specific page in the photo stream. Page numbering is 1-based.",
+          "required": false
+        },
+        {
+          "name": "perPage",
+          "type": "Number",
+          "info": "The number of results to return. Can not be over 100, default 20.",
+          "required": false,
+          "vendorSchema": {
+            "name": "rpp"
+          }
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/photos\/{$data['photoId']}\/votes",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": [
+              "page",
+              "rpp"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "updatePhoto",
+      "description": "Allows the client application to update user-editable information on a photo.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "photoId",
+          "type": "String",
+          "info": "Id of the photo",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "info": "Title of the photo, up to 255 characters in length.",
+          "required": false
+        },
+        {
+          "name": "description",
+          "type": "String",
+          "info": "Text description of the photo, up to 65535 characters in length.",
+          "required": false
+        },
+        {
+          "name": "category",
+          "type": "Select",
+          "options": [
+            "0",
+            "10",
+            "29",
+            "11",
+            "5",
+            "1",
+            "9",
+            "15",
+            "16",
+            "20",
+            "14",
+            "2",
+            "24",
+            "23",
+            "3",
+            "8",
+            "12",
+            "18",
+            "30",
+            "4",
+            "7",
+            "19",
+            "17",
+            "6",
+            "21",
+            "26",
+            "13",
+            "22",
+            "27",
+            "25"
+          ],
+          "info": "[Category of the photo](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#categories)",
+          "required": false
+        },
+        {
+          "name": "tags",
+          "type": "List",
+          "structure": {
+            "name": "tag",
+            "type": "String",
+            "info": "Single tag"
+          },
+          "info": "List of tags applicable to this photo.",
+          "required": false,
+          "vendorSchema": {
+            "name": "tags",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "addTags",
+          "type": "List",
+          "structure": {
+            "name": "tag",
+            "type": "String",
+            "info": "Single tag"
+          },
+          "info": "list of tags to add to this photo's existing tags.",
+          "required": false,
+          "vendorSchema": {
+            "name": "add_tags",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "removeTags",
+          "type": "List",
+          "structure": {
+            "name": "tag",
+            "type": "String",
+            "info": "Single tag"
+          },
+          "info": "list of tags to remove from this photo's existing tags.",
+          "required": false,
+          "vendorSchema": {
+            "name": "remove_tags",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "shutterSpeed",
+          "type": "String",
+          "info": "Shutter speed value for the photo, internally stored as string.",
+          "required": false,
+          "vendorSchema": {
+            "name": "shutter_speed"
+          }
+        },
+        {
+          "name": "focalLength",
+          "type": "String",
+          "info": "Focal length value for the photo, internally stored as string.",
+          "required": false,
+          "vendorSchema": {
+            "name": "focal_length"
+          }
+        },
+        {
+          "name": "aperture",
+          "type": "String",
+          "info": "Aperture value value for the photo, internally stored as string.",
+          "required": false
+        },
+        {
+          "name": "iso",
+          "type": "String",
+          "info": "Integer ISO value for the photo.",
+          "required": false
+        },
+        {
+          "name": "camera",
+          "type": "String",
+          "info": "Make and model of the camera used to take this photo.",
+          "required": false
+        },
+        {
+          "name": "lens",
+          "type": "String",
+          "info": "Information about the lens used to take this photo.",
+          "required": false
+        },
+        {
+          "name": "coordinates",
+          "type": "Map",
+          "info": "Location this photo was taken at",
+          "required": false
+        },
+        {
+          "name": "nsfw",
+          "type": "Select",
+          "options": [
+            "true",
+            "false"
+          ],
+          "info": "Boolean value indicating that the photo may contain not-safe-for-work content or content not suitable for minors.",
+          "required": false
+        },
+        {
+          "name": "licenseTypes",
+          "type": "Select",
+          "options": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "info": "[Types of licenses](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#license-types)",
+          "required": false,
+          "vendorSchema": {
+            "name": "license_type"
+          }
+        },
+        {
+          "name": "privacy",
+          "type": "Select",
+          "options": [
+            "0",
+            "1"
+          ],
+          "info": "Integer value indicating that the photo should be shown (0) or hidden (1) on the user's profile.",
+          "required": false
+        },
+        {
+          "name": "crop",
+          "type": "String",
+          "info": "A hash containing keys x, x2, y, y2 and representing coordinates within which the thumbnail must be cropped. The crop is made using the top left corner as the origin. ",
+          "required": false
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/photos\/{$data['photoId']}",
+        "method": "put",
+        "requestParameters": [
+          {
+            "type": "form_params",
+            "parameters": [
+              "crop",
+              "privacy",
+              "license_type",
+              "nsfw",
+              "coordinates",
+              "lens",
+              "camera",
+              "iso",
+              "aperture",
+              "focal_length",
+              "shutter_speed",
+              "remove_tags",
+              "add_tags",
+              "tags",
+              "category",
+              "description",
+              "name"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "addPhoto",
+      "description": "Create a new photo on behalf of the user, and receive an upload key in exchange.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "info": "Title of the photo, up to 255 characters in length.",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "String",
+          "info": "Text description of the photo, up to 65535 characters in length.",
+          "required": true
+        },
+        {
+          "name": "category",
+          "type": "Select",
+          "options": [
+            "0",
+            "10",
+            "29",
+            "11",
+            "5",
+            "1",
+            "9",
+            "15",
+            "16",
+            "20",
+            "14",
+            "2",
+            "24",
+            "23",
+            "3",
+            "8",
+            "12",
+            "18",
+            "30",
+            "4",
+            "7",
+            "19",
+            "17",
+            "6",
+            "21",
+            "26",
+            "13",
+            "22",
+            "27",
+            "25"
+          ],
+          "info": "[Category of the photo](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#categories)",
+          "required": true
+        },
+        {
+          "name": "tags",
+          "type": "List",
+          "structure": {
+            "name": "tag",
+            "type": "String",
+            "info": "Single tag"
+          },
+          "info": "List of tags applicable to this photo.",
+          "required": false,
+          "vendorSchema": {
+            "name": "tags",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "shutterSpeed",
+          "type": "String",
+          "info": "Shutter speed value for the photo, internally stored as string.",
+          "required": false,
+          "vendorSchema": {
+            "name": "shutter_speed"
+          }
+        },
+        {
+          "name": "focalLength",
+          "type": "String",
+          "info": "Focal length value for the photo, internally stored as string.",
+          "required": false,
+          "vendorSchema": {
+            "name": "focal_length"
+          }
+        },
+        {
+          "name": "aperture",
+          "type": "String",
+          "info": "Aperture value value for the photo, internally stored as string.",
+          "required": false
+        },
+        {
+          "name": "iso",
+          "type": "String",
+          "info": "Integer ISO value for the photo.",
+          "required": false
+        },
+        {
+          "name": "camera",
+          "type": "String",
+          "info": "Make and model of the camera used to take this photo.",
+          "required": false
+        },
+        {
+          "name": "lens",
+          "type": "String",
+          "info": "Information about the lens used to take this photo.",
+          "required": false
+        },
+        {
+          "name": "coordinates",
+          "type": "Map",
+          "info": "Location this photo was taken at",
+          "required": false
+        },
+        {
+          "name": "privacy",
+          "type": "Select",
+          "options": [
+            "0",
+            "1"
+          ],
+          "info": "Integer value indicating that the photo should be shown (0) or hidden (1) on the user's profile.",
+          "required": false
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/photos",
+        "method": "post",
+        "requestParameters": [
+          {
+            "type": "form_params",
+            "parameters": [
+              "privacy",
+              "coordinates",
+              "lens",
+              "camera",
+              "iso",
+              "aperture",
+              "focal_length",
+              "shutter_speed",
+              "tags",
+              "category",
+              "description",
+              "name"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "uploadPhoto",
+      "description": "Upload a photo",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true,
+          "vendorSchema": {
+            "name": "consumer_key"
+          }
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true,
+          "vendorSchema": {
+            "name": "access_key"
+          }
+        },
+        {
+          "name": "uploadKey",
+          "type": "String",
+          "info": "Upload key received in the response to addPhoto",
+          "required": true,
+          "vendorSchema": {
+            "name": "upload_key"
+          }
+        },
+        {
+          "name": "photoId",
+          "type": "String",
+          "info": "The ID of the photo the file is being uploaded for",
+          "required": true,
+          "vendorSchema": {
+            "name": "photo_id"
+          }
+        },
+        {
+          "name": "file",
+          "type": "File",
+          "info": "Photo file",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "info": "Title of the photo, up to 255 characters in length.",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "String",
+          "info": "Text description of the photo, up to 65535 characters in length.",
+          "required": true
+        },
+        {
+          "name": "category",
+          "type": "Select",
+          "options": [
+            "0",
+            "10",
+            "29",
+            "11",
+            "5",
+            "1",
+            "9",
+            "15",
+            "16",
+            "20",
+            "14",
+            "2",
+            "24",
+            "23",
+            "3",
+            "8",
+            "12",
+            "18",
+            "30",
+            "4",
+            "7",
+            "19",
+            "17",
+            "6",
+            "21",
+            "26",
+            "13",
+            "22",
+            "27",
+            "25"
+          ],
+          "info": "[Category of the photo](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#categories)",
+          "required": true
+        },
+        {
+          "name": "shutterSpeed",
+          "type": "String",
+          "info": "Shutter speed value for the photo, internally stored as string.",
+          "required": false,
+          "vendorSchema": {
+            "name": "shutter_speed"
+          }
+        },
+        {
+          "name": "focalLength",
+          "type": "String",
+          "info": "Focal length value for the photo, internally stored as string.",
+          "required": false,
+          "vendorSchema": {
+            "name": "focal_length"
+          }
+        },
+        {
+          "name": "aperture",
+          "type": "String",
+          "info": "Aperture value value for the photo, internally stored as string.",
+          "required": false
+        },
+        {
+          "name": "iso",
+          "type": "String",
+          "info": "Integer ISO value for the photo.",
+          "required": false
+        },
+        {
+          "name": "camera",
+          "type": "String",
+          "info": "Make and model of the camera used to take this photo.",
+          "required": false
+        },
+        {
+          "name": "lens",
+          "type": "String",
+          "info": "Information about the lens used to take this photo.",
+          "required": false
+        },
+        {
+          "name": "coordinates",
+          "type": "Map",
+          "info": "Location this photo was taken at",
+          "required": false
+        },
+        {
+          "name": "privacy",
+          "type": "Select",
+          "options": [
+            "0",
+            "1"
+          ],
+          "info": "Integer value indicating that the photo should be shown (0) or hidden (1) on the user's profile.",
+          "required": false
+        },
+        {
+          "name": "crop",
+          "type": "String",
+          "info": "A hash containing keys x, x2, y, y2 and representing coordinates within which the thumbnail must be cropped. The crop is made using the top left corner as the origin. ",
+          "required": false
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/upload.500px.com\/v1\/upload",
+        "method": "post",
+        "requestParameters": [
+          {
+            "type": "multipart",
+            "parameters": [
+              "photo_id",
+              "upload_key",
+              "access_key",
+              "consumer_key",
+              "privacy",
+              "coordinates",
+              "lens",
+              "camera",
+              "iso",
+              "aperture",
+              "focal_length",
+              "shutter_speed",
+              "crop",
+              "category",
+              "description",
+              "name"
+            ]
+          }
+        ]
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "addVote",
+      "description": "Allows the user to vote for a photo.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "photoId",
+          "type": "String",
+          "info": "Id of the photo",
+          "required": true
+        },
+        {
+          "name": "vote",
+          "type": "Select",
+          "options": [
+            "0",
+            "1"
+          ],
+          "info": "Values: '0' for 'dislike' or '1' for 'like'.",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/photos\/{$data['photoId']}\/vote",
+        "method": "post",
+        "requestParameters": [
+          {
+            "type": "form_params",
+            "parameters": [
+              "vote"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "deleteVote",
+      "description": "Unlikes the specified photo for the user.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "photoId",
+          "type": "String",
+          "info": "Id of the photo",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/photos\/{$data['photoId']}\/vote",
+        "method": "delete",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": []
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "addTags",
+      "description": "Adds tags to the photo.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "photoId",
+          "type": "String",
+          "info": "Id of the photo",
+          "required": true
+        },
+        {
+          "name": "tags",
+          "type": "List",
+          "structure": {
+            "name": "tag",
+            "type": "String",
+            "info": "Single tag"
+          },
+          "info": "List of tags to add to this photo",
+          "required": true,
+          "vendorSchema": {
+            "format": "toString:{,}"
+          }
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/photos\/{$data['photoId']}\/tags",
+        "method": "post",
+        "requestParameters": [
+          {
+            "type": "form_params",
+            "parameters": [
+              "tags"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "addComment",
+      "description": "Creates a new comment for the photo.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "photoId",
+          "type": "String",
+          "info": "Id of the photo",
+          "required": true
+        },
+        {
+          "name": "body",
+          "type": "String",
+          "info": "Id of the photo",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/photos\/{$data['photoId']}\/comments",
+        "method": "post",
+        "requestParameters": [
+          {
+            "type": "form_params",
+            "parameters": [
+              "body"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "reportPhoto",
+      "description": "Allows to report a photo.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "photoId",
+          "type": "String",
+          "info": "Id of the photo",
+          "required": true
+        },
+        {
+          "name": "reason",
+          "type": "Select",
+          "options": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "info": " Reason for the report '1' \u2014 Offensive (rude, obscene) '2' \u2014 Spam (ads, self-promotion) '3' \u2014 Offtopic (trolling) '4' \u2014 Copyright (plagiarism, stealing) '5' \u2014 Wrong content (illustration, 3D) '6' \u2014 Should be tagged as adult content",
+          "required": true
+        },
+        {
+          "name": "reasonDetails",
+          "type": "String",
+          "info": "Additional information about the report, as a text blob",
+          "required": false,
+          "vendorSchema": {
+            "name": "reason_details"
+          }
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/photos\/{$data['photoId']}\/report",
+        "method": "post",
+        "requestParameters": [
+          {
+            "type": "form_params",
+            "parameters": [
+              "reason",
+              "reason_details"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "deletePhoto",
+      "description": "Deletes the photo from the User's library.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "photoId",
+          "type": "String",
+          "info": "Id of the photo",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/photos\/{$data['photoId']}",
+        "method": "delete",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": []
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "deleteTags",
+      "description": "Removes tags from the photo. ",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "photoId",
+          "type": "String",
+          "info": "Id of the photo",
+          "required": true
+        },
+        {
+          "name": "tags",
+          "type": "List",
+          "structure": {
+            "name": "tag",
+            "type": "String",
+            "info": "Single tag"
+          },
+          "info": "List of tags to add to this photo",
+          "required": true,
+          "vendorSchema": {
+            "format": "toString:{,}"
+          }
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/photos\/{$data['photoId']}\/tags",
+        "method": "delete",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": [
+              "tags"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "getMyInfo",
+      "description": "Returns the profile information for the current user.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": []
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "getUserinfoById",
+      "description": "Return information for the specified user ID.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Id of the user",
+          "required": true,
+          "vendorSchema": {
+            "name": "id"
+          }
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/show",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": [
+              "id"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "getUserinfoByUsername",
+      "description": "Return information for the specified username.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "username",
+          "type": "String",
+          "info": "Username of the user",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/show",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": [
+              "username"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "getUserinfoByEmail",
+      "description": "Return information for the specified email.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "email",
+          "type": "String",
+          "info": "Email of the user",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/show",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": [
+              "email"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "listUserFriends",
+      "description": "Returns a list of friends for the specified user.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Id of the user",
+          "required": true
+        },
+        {
+          "name": "page",
+          "type": "Number",
+          "info": "Return the specified page of the resource. Page numbering is 1-based..",
+          "required": false
+        },
+        {
+          "name": "perPage",
+          "type": "Number",
+          "info": "The number of results to return. Can not be over 100, default 20.",
+          "required": false,
+          "vendorSchema": {
+            "name": "rpp"
+          }
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/{$data['userId']}\/friends",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": [
+              "page",
+              "rpp"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "listUserFollowers",
+      "description": "Returns a list of users who follow the specified user.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Id of the user",
+          "required": true
+        },
+        {
+          "name": "page",
+          "type": "Number",
+          "info": "Return the specified page of the resource. Page numbering is 1-based..",
+          "required": false
+        },
+        {
+          "name": "perPage",
+          "type": "Number",
+          "info": "The number of results to return. Can not be over 100, default 20.",
+          "required": false,
+          "vendorSchema": {
+            "name": "rpp"
+          }
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/{$data['userId']}\/followers",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": [
+              "page",
+              "rpp"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "searchUsers",
+      "description": "Return listing of ten (up to one hundred) users from search results for a specified search term.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "term",
+          "type": "String",
+          "info": "A keyword to search for.",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/search",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": [
+              "term"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "addFriend",
+      "description": "Add the user to the list of followers.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Id of the user",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/{$data['userId']}\/friends",
+        "method": "post",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": []
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "deleteFriend",
+      "description": "Removes the user from the list of followers.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Id of the user",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/{$data['userId']}\/friends",
+        "method": "delete",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": []
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "listGalleries",
+      "description": "Returns a listing of twenty (up to one hundred) galleries for the given user.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "ID of the user",
+          "required": true
+        },
+        {
+          "name": "sort",
+          "type": "Select",
+          "options": [
+            "created_at",
+            "updated_at",
+            "last_added_to_at",
+            "rating",
+            "position"
+          ],
+          "info": "Sort galleries in the specified order.",
+          "required": false
+        },
+        {
+          "name": "includeCover",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "If 1, the user's cover is included.",
+          "required": false,
+          "vendorSchema": {
+            "name": "include_cover"
+          }
+        },
+        {
+          "name": "page",
+          "type": "Number",
+          "info": "Return a specific page in the photo stream. Page numbering is 1-based.",
+          "required": false
+        },
+        {
+          "name": "perPage",
+          "type": "Number",
+          "info": "The number of results to return. Can not be over 100, default 20.",
+          "required": false,
+          "vendorSchema": {
+            "name": "rpp"
+          }
+        },
+        {
+          "name": "coverSize",
+          "type": "Number",
+          "info": "The cover photo size to be returned, if include_cover is set. Defaults to 4.",
+          "required": false,
+          "vendorSchema": {
+            "name": "cover_size"
+          }
+        },
+        {
+          "name": "sortDirection",
+          "type": "Select",
+          "options": [
+            "asc",
+            "desc"
+          ],
+          "info": "Control the order of the sorting. You can provide a sortDirection without providing a sort, in which case the default sort for the requested feature will be adjusted.",
+          "required": false,
+          "vendorSchema": {
+            "name": "sort_direction"
+          }
+        },
+        {
+          "name": "privacy",
+          "type": "Select",
+          "options": [
+            "private",
+            "public",
+            "both"
+          ],
+          "info": "The privacy level of the galleries to return.",
+          "required": false
+        },
+        {
+          "name": "kinds",
+          "type": "List",
+          "structure": {
+            "name": "kind",
+            "type": "Select",
+            "options": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "info": "Single kind"
+          },
+          "info": "List of [gallery kinds](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#gallery-kinds).",
+          "required": false,
+          "vendorSchema": {
+            "format": "toString:{,}"
+          }
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/{$data['userId']}\/galleries",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": [
+              "sort",
+              "include_cover",
+              "cover_size",
+              "page",
+              "rpp",
+              "sort_direction",
+              "privacy"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "getGalleryById",
+      "description": "Returns the details of the requested gallery",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Id of the user",
+          "required": true
+        },
+        {
+          "name": "galleryId",
+          "type": "String",
+          "info": "Id of the gallery",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/{$data['userId']}\/galleries\/{$data['galleryId']}",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": []
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "getGalleryByPath",
+      "description": "Returns the details of the requested gallery",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Id of the user",
+          "required": true
+        },
+        {
+          "name": "galleryPath",
+          "type": "String",
+          "info": "Path of the gallery",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/{$data['userId']}\/galleries\/{$data['galleryPath']}",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": []
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "getGalleryByToken",
+      "description": "Returns the details of the requested gallery",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Id of the user",
+          "required": true
+        },
+        {
+          "name": "galleryToken",
+          "type": "String",
+          "info": "TOken of the gallery",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/{$data['userId']}\/galleries\/{$data['galleryToken']}",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": []
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "listGalleryPhotos",
+      "description": "Returns a listing of twenty (up to one hundred) photos in the given gallery.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Id of the user",
+          "required": true
+        },
+        {
+          "name": "galleryId",
+          "type": "String",
+          "info": "Id of the gallery",
+          "required": true
+        },
+        {
+          "name": "includeCategories",
+          "type": "List",
+          "structure": {
+            "name": "category",
+            "type": "String",
+            "info": "Single category"
+          },
+          "info": "Categories to return photos from",
+          "required": false,
+          "vendorSchema": {
+            "name": "only",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "excludeCategories",
+          "type": "List",
+          "structure": {
+            "name": "category",
+            "type": "String",
+            "info": "Single category"
+          },
+          "info": "Exclude categories to return photos from",
+          "required": false,
+          "vendorSchema": {
+            "name": "exclude",
+            "format": "toString:{,}"
+          }
+        },
+        {
+          "name": "sort",
+          "type": "Select",
+          "options": [
+            "created_at",
+            "rating",
+            "highest_rating",
+            "times_viewed",
+            "votes_count",
+            "comments_count",
+            "taken_at"
+          ],
+          "info": "Sort photos in the specified order.",
+          "required": false
+        },
+        {
+          "name": "sortDirection",
+          "type": "Select",
+          "options": [
+            "asc",
+            "desc"
+          ],
+          "info": "Control the order of the sorting. You can provide a sortDirection without providing a sort, in which case the default sort for the requested feature will be adjusted.",
+          "required": false,
+          "vendorSchema": {
+            "name": "sort_direction"
+          }
+        },
+        {
+          "name": "page",
+          "type": "Number",
+          "info": "Return a specific page in the photo stream. Page numbering is 1-based.",
+          "required": false
+        },
+        {
+          "name": "perPage",
+          "type": "Number",
+          "info": "The number of results to return. Can not be over 100, default 20.",
+          "required": false,
+          "vendorSchema": {
+            "name": "rpp"
+          }
+        },
+        {
+          "name": "imageSize",
+          "type": "Select",
+          "options": [
+            "1",
+            "2",
+            "3",
+            "100",
+            "200",
+            "440",
+            "600"
+          ],
+          "info": "The photo size(s) to be returned. [list of formats](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#image-urls-and-image-sizes)",
+          "required": false,
+          "vendorSchema": {
+            "name": "image_size"
+          }
+        },
+        {
+          "name": "includeStore",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "If set to 1, returns market infomation about the photo.",
+          "required": false,
+          "vendorSchema": {
+            "name": "include_store"
+          }
+        },
+        {
+          "name": "includeStates",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "If set to 1, returns state of the photo for the currently logged in user and authenticated request.",
+          "required": false,
+          "vendorSchema": {
+            "name": "include_states"
+          }
+        },
+        {
+          "name": "includeTags",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": " If set to 1, returns an array of tags for the photo.",
+          "required": false,
+          "vendorSchema": {
+            "name": "include_tags"
+          }
+        },
+        {
+          "name": "includeMissing",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "If set to 1, returns ids of photos that have been deleted, made private or the owner of the photo is deactivated.",
+          "required": false,
+          "vendorSchema": {
+            "name": "include_missing"
+          }
+        },
+        {
+          "name": "includeGeo",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "If set to 1, returns location information about the photo.",
+          "required": false,
+          "vendorSchema": {
+            "name": "include_geo"
+          }
+        },
+        {
+          "name": "includeLicensing",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "If set to 1, returns licensing information for the photo.",
+          "required": false,
+          "vendorSchema": {
+            "name": "include_licensing"
+          }
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/{$data['userId']}\/galleries\/{$data['galleryId']}\/items",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": [
+              "include_licensing",
+              "include_geo",
+              "include_missing",
+              "include_tags",
+              "include_states",
+              "include_store",
+              "only",
+              "exclude",
+              "sort_direction",
+              "sort",
+              "page",
+              "rpp",
+              "image_size"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "getGalleryShareUrl",
+      "description": "Returns a sharable private URL for the given gallery.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Id of the user",
+          "required": true
+        },
+        {
+          "name": "galleryId",
+          "type": "String",
+          "info": "Id of the gallery",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/{$data['userId']}\/galleries\/{$data['galleryId']}\/share_url",
+        "method": "get",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": []
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "updateGallery",
+      "description": "Updates the metadata for the given gallery.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Id of the user",
+          "required": true
+        },
+        {
+          "name": "galleryId",
+          "type": "String",
+          "info": "Id of the gallery",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "info": "Title of the gallery, up to 255 characters in length.",
+          "required": false
+        },
+        {
+          "name": "description",
+          "type": "String",
+          "info": "Text description of the photo, up to 65535 characters in length.",
+          "required": false
+        },
+        {
+          "name": "subtitle",
+          "type": "String",
+          "info": "Updates the subtitle of the gallery.",
+          "required": false
+        },
+        {
+          "name": "privacy",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "If 1, the gallery is marked private, otherwise it is public.",
+          "required": false
+        },
+        {
+          "name": "coverPhotIid",
+          "type": "String",
+          "info": "Updates the gallery's cover photo, must be a pre-existing item in the gallery with valid photo and user.",
+          "required": false,
+          "vendorSchema": {
+            "name": "cover_photo_id"
+          }
+        },
+        {
+          "name": "customPath",
+          "type": "String",
+          "info": "A slug that the gallery will be accessible through. Needs to be unique to the user.",
+          "required": false,
+          "vendorSchema": {
+            "name": "custom_path"
+          }
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/{$data['userId']}\/galleries\/{$data['galleryId']}",
+        "method": "put",
+        "requestParameters": [
+          {
+            "type": "form_params",
+            "parameters": [
+              "name",
+              "description",
+              "subtitle",
+              "privacy",
+              "cover_photo_id",
+              "custom_path"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "addPhotosAfter",
+      "description": "Adds photos after photo",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Id of the user",
+          "required": true
+        },
+        {
+          "name": "galleryId",
+          "type": "String",
+          "info": "Id of the gallery",
+          "required": true
+        },
+        {
+          "name": "addAfter",
+          "type": "String",
+          "info": "Id of the photo",
+          "required": true
+        },
+        {
+          "name": "photos",
+          "type": "List",
+          "structure": {
+            "name": "photo",
+            "type": "String",
+            "info": "Single photo"
+          },
+          "info": "list of photo to add",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/{$data['userId']}\/galleries\/{$data['galleryId']}\/items",
+        "method": "put",
+        "requestParameters": [
+          {
+            "type": "json",
+            "parameters": [
+              "photos",
+              "addAfter"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        },
+        "vendorFieldsStructure": {
+          "add": {
+            "after": {
+              "id": "{addAfter}"
+            },
+            "photos": "{photos}"
+          }
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "addPhotosBefore",
+      "description": "Adds photos before photo",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Id of the user",
+          "required": true
+        },
+        {
+          "name": "galleryId",
+          "type": "String",
+          "info": "Id of the gallery",
+          "required": true
+        },
+        {
+          "name": "addBefore",
+          "type": "String",
+          "info": "Id of the photo",
+          "required": true
+        },
+        {
+          "name": "photos",
+          "type": "List",
+          "structure": {
+            "name": "photo",
+            "type": "String",
+            "info": "Single photo"
+          },
+          "info": "list of photo to add",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/{$data['userId']}\/galleries\/{$data['galleryId']}\/items",
+        "method": "put",
+        "requestParameters": [
+          {
+            "type": "json",
+            "parameters": [
+              "photos",
+              "addBefore"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        },
+        "vendorFieldsStructure": {
+          "add": {
+            "before": {
+              "id": "{addBefore}"
+            },
+            "photos": "{photos}"
+          }
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "removePhotos",
+      "description": "Remove photos",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Id of the user",
+          "required": true
+        },
+        {
+          "name": "galleryId",
+          "type": "String",
+          "info": "Id of the gallery",
+          "required": true
+        },
+        {
+          "name": "photos",
+          "type": "List",
+          "structure": {
+            "name": "photo",
+            "type": "String",
+            "info": "Single photo"
+          },
+          "info": "list of photo to remove",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/{$data['userId']}\/galleries\/{$data['galleryId']}\/items",
+        "method": "put",
+        "requestParameters": [
+          {
+            "type": "json",
+            "parameters": [
+              "photos"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        },
+        "vendorFieldsStructure": {
+          "remove": {
+            "photos": "{photos}"
+          }
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "repositionGalleries",
+      "description": "Reposition galleries",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Id of the user",
+          "required": true
+        },
+        {
+          "name": "beforeId",
+          "type": "String",
+          "info": "The id of another gallery to position the galleries before",
+          "required": false,
+          "vendorSchema": {
+            "name": "before_id"
+          }
+        },
+        {
+          "name": "afterIds",
+          "type": "String",
+          "info": "The id of another gallery to position the galleries after",
+          "required": false,
+          "vendorSchema": {
+            "name": "after_id"
+          }
+        },
+        {
+          "name": "galleries",
+          "type": "List",
+          "structure": {
+            "name": "gallery",
+            "type": "String",
+            "info": "Single gallery"
+          },
+          "info": "list of galleries to reposition",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/{$data['userId']}\/galleries\/reposition",
+        "method": "put",
+        "requestParameters": [
+          {
+            "type": "form_params",
+            "parameters": [
+              "before_id",
+              "after_id",
+              "galleries"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        },
+        "vendorFieldsStructure": {
+          "add": {
+            "before": {
+              "id": "{addBefore}"
+            },
+            "photos": "{photos}"
+          }
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "addGallery",
+      "description": "Creates a new, empty gallery owned by the given user.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Id of the user",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "info": "Title of the gallery, up to 255 characters in length.",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "String",
+          "info": "Text description of the photo, up to 65535 characters in length.",
+          "required": false
+        },
+        {
+          "name": "subtitle",
+          "type": "String",
+          "info": "Updates the subtitle of the gallery.",
+          "required": false
+        },
+        {
+          "name": "privacy",
+          "type": "Select",
+          "options": [
+            "1"
+          ],
+          "info": "If 1, the gallery is marked private, otherwise it is public.",
+          "required": false
+        },
+        {
+          "name": "customPath",
+          "type": "String",
+          "info": "A slug that the gallery will be accessible through. Needs to be unique to the user.",
+          "required": false,
+          "vendorSchema": {
+            "name": "custom_path"
+          }
+        },
+        {
+          "name": "kind",
+          "type": "Select",
+          "options": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "info": "List of [gallery kinds](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#gallery-kinds).",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/{$data['userId']}\/galleries",
+        "method": "post",
+        "requestParameters": [
+          {
+            "type": "form_params",
+            "parameters": [
+              "name",
+              "description",
+              "subtitle",
+              "privacy",
+              "custom_path",
+              "kind"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "deleteGallery",
+      "description": "Deletes the gallery.",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "info": "Id of the user",
+          "required": true
+        },
+        {
+          "name": "galleryId",
+          "type": "String",
+          "info": "Id of the gallery",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/users\/{$data['userId']}\/galleries\/{$data['galleryId']}",
+        "method": "delete",
+        "requestParameters": [
+          {
+            "type": "query",
+            "parameters": []
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    },
+    {
+      "name": "replyComment",
+      "description": "Creates a reply to an existing comment. ",
+      "args": [
+        {
+          "name": "apiKey",
+          "type": "credentials",
+          "info": "Your API key",
+          "required": true
+        },
+        {
+          "name": "apiSecret",
+          "type": "credentials",
+          "info": "Your API secret",
+          "required": true
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "info": "The oauthToken obtained",
+          "required": true
+        },
+        {
+          "name": "tokenSecret",
+          "type": "String",
+          "info": "The tokenSecret obtained",
+          "required": true
+        },
+        {
+          "name": "commentId",
+          "type": "String",
+          "info": "Id of the comment",
+          "required": true
+        },
+        {
+          "name": "body",
+          "type": "String",
+          "info": "Body of the comment",
+          "required": true
+        }
+      ],
+      "vendorRequest": {
+        "url": "https:\/\/api.500px.com\/v1\/comments\/${data['commentId']}\/comments",
+        "method": "post",
+        "requestParameters": [
+          {
+            "type": "form_params",
+            "parameters": [
+              "body"
+            ]
+          }
+        ],
+        "oauth1": {
+          "ck": "{$data['apiKey']}",
+          "cs": "{$data['apiSecret']}",
+          "token": "{$data['token']}",
+          "tokenSecret": "{$data['tokenSecret']}"
+        }
+      },
+      "callbacks": [
+        {
+          "name": "error",
+          "info": "Error"
+        },
+        {
+          "name": "success",
+          "info": "Success"
+        }
+      ]
+    }
+  ]
+}
