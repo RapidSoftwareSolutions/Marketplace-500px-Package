@@ -17,11 +17,11 @@ $app->post('/api/500px/addPhoto', function ($request, $response) {
     $bodyParams = [
        'form_params' => ['privacy','coordinates','lens','camera','iso','aperture','focal_length','shutter_speed','tags','category','description','name']
     ];
-
     $data = \Models\Params::createParams($requiredParams, $optionalParams, $post_data['args']);
 
-    
-    $data['tags'] = \Models\Params::toString($data['tags'], ','); 
+    $data['latitdue'] = explode(',', $post_data['args']['coordinates'])[0];
+    $data['longitude'] = explode(',', $post_data['args']['coordinates'])[1];
+    $data['tags'] = \Models\Params::toString($data['tags'], ',');
 
     $stack = GuzzleHttp\HandlerStack::create();     $middleware = new GuzzleHttp\Subscriber\Oauth\Oauth1([         'consumer_key'    => $data['apiKey'],         'consumer_secret' => $data['apiSecret'],         'token' => $post_data['args']['token'],         'token_secret' => $post_data['args']['tokenSecret']     ]);     $stack->push($middleware);     $client = new GuzzleHttp\Client([         'handler' => $stack,         'auth' => 'oauth'     ]);
     $query_str = "https://api.500px.com/v1/photos";
