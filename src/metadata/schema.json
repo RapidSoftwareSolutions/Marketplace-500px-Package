@@ -4265,7 +4265,7 @@
           }
         },
         {
-          "name": "afterIds",
+          "name": "afterId",
           "type": "String",
           "info": "The id of another gallery to position the galleries after",
           "required": false,

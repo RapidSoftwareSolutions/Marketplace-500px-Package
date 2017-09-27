@@ -594,7 +594,7 @@ Reposition galleries
 | tokenSecret| String     | The tokenSecret obtained
 | userId     | String     | Id of the user
 | beforeId   | String     | The id of another gallery to position the galleries before
-| afterIds   | String     | The id of another gallery to position the galleries after
+| afterId    | String     | The id of another gallery to position the galleries after
 | galleries  | List       | list of galleries to reposition
 
 ## 500px.addGallery

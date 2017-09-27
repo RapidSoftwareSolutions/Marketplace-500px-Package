@@ -4,41 +4,42 @@ $app->post('/api/500px/repositionGalleries', function ($request, $response) {
 
     $settings = $this->settings;
     $checkRequest = $this->validation;
-    $validateRes = $checkRequest->validate($request, ['apiKey','apiSecret','token','tokenSecret','userId','galleries']);
+    $validateRes = $checkRequest->validate($request, ['apiKey', 'apiSecret', 'token', 'tokenSecret', 'userId', 'galleries']);
 
-    if(!empty($validateRes) && isset($validateRes['callback']) && $validateRes['callback']=='error') {
+    if (!empty($validateRes) && isset($validateRes['callback']) && $validateRes['callback'] == 'error') {
         return $response->withHeader('Content-type', 'application/json')->withStatus(200)->withJson($validateRes);
     } else {
         $post_data = $validateRes;
     }
 
-    $requiredParams = ['apiKey'=>'apiKey','apiSecret'=>'apiSecret','token'=>'token','tokenSecret'=>'tokenSecret','userId'=>'userId','galleries'=>'galleries'];
-    $optionalParams = ['beforeId'=>'before_id','afterIds'=>'after_id'];
+    $requiredParams = ['apiKey' => 'apiKey', 'apiSecret' => 'apiSecret', 'token' => 'token', 'tokenSecret' => 'tokenSecret', 'userId' => 'userId', 'galleries' => 'galleries'];
+    $optionalParams = ['beforeId' => 'before_id', 'afterId' => 'after_id'];
     $bodyParams = [
-       'form_params' => ['before_id','after_id','galleries']
+        'form_params' => ['before_id', 'after_id', 'galleries']
     ];
 
     $data = \Models\Params::createParams($requiredParams, $optionalParams, $post_data['args']);
 
-    
 
-    $stack = GuzzleHttp\HandlerStack::create();     $middleware = new GuzzleHttp\Subscriber\Oauth\Oauth1([         'consumer_key'    => $data['apiKey'],         'consumer_secret' => $data['apiSecret'],         'token' => $post_data['args']['token'],         'token_secret' => $post_data['args']['tokenSecret']     ]);     $stack->push($middleware);     $client = new GuzzleHttp\Client([         'handler' => $stack,         'auth' => 'oauth'     ]);
+    $stack = GuzzleHttp\HandlerStack::create();
+    $middleware = new GuzzleHttp\Subscriber\Oauth\Oauth1(['consumer_key' => $data['apiKey'], 'consumer_secret' => $data['apiSecret'], 'token' => $post_data['args']['token'], 'token_secret' => $post_data['args']['tokenSecret']]);
+    $stack->push($middleware);
+    $client = new GuzzleHttp\Client(['handler' => $stack, 'auth' => 'oauth']);
     $query_str = "https://api.500px.com/v1/users/{$data['userId']}/galleries/reposition";
 
-    
 
     $requestParams = \Models\Params::createRequestBody($data, $bodyParams);
     $requestParams['headers'] = [];
-     
+
 
     try {
         $resp = $client->put($query_str, $requestParams);
         $responseBody = $resp->getBody()->getContents();
 
-        if(in_array($resp->getStatusCode(), ['200', '201', '202', '203', '204'])) {
+        if (in_array($resp->getStatusCode(), ['200', '201', '202', '203', '204'])) {
             $result['callback'] = 'success';
             $result['contextWrites']['to'] = is_array($responseBody) ? $responseBody : json_decode($responseBody);
-            if(empty($result['contextWrites']['to'])) {
+            if (empty($result['contextWrites']['to'])) {
                 $result['contextWrites']['to']['status_msg'] = "Api return no results";
             }
         } else {
@@ -50,7 +51,7 @@ $app->post('/api/500px/repositionGalleries', function ($request, $response) {
     } catch (\GuzzleHttp\Exception\ClientException $exception) {
 
         $responseBody = $exception->getResponse()->getBody()->getContents();
-        if(empty(json_decode($responseBody))) {
+        if (empty(json_decode($responseBody))) {
             $out = $responseBody;
         } else {
             $out = json_decode($responseBody);
@@ -62,7 +63,7 @@ $app->post('/api/500px/repositionGalleries', function ($request, $response) {
     } catch (GuzzleHttp\Exception\ServerException $exception) {
 
         $responseBody = $exception->getResponse()->getBody()->getContents();
-        if(empty(json_decode($responseBody))) {
+        if (empty(json_decode($responseBody))) {
             $out = $responseBody;
         } else {
             $out = json_decode($responseBody);
