@@ -24,7 +24,7 @@ $app->post('/api/500px/searchPhotosByGeo', function ($request, $response) {
     $data['only'] = \Models\Params::toString($data['only'], ','); 
     $data['exclude'] = \Models\Params::toString($data['exclude'], ','); 
     $data['license_type'] = \Models\Params::toString($data['license_type'], ','); 
-
+    $data['geo'] = $data['geo'].",".$data['radius']."<".$data['units'].">";
     $stack = GuzzleHttp\HandlerStack::create();     $middleware = new GuzzleHttp\Subscriber\Oauth\Oauth1([         'consumer_key'    => $data['apiKey'],         'consumer_secret' => $data['apiSecret'],         'token' => $post_data['args']['token'],         'token_secret' => $post_data['args']['tokenSecret']     ]);     $stack->push($middleware);     $client = new GuzzleHttp\Client([         'handler' => $stack,         'auth' => 'oauth'     ]);
     $query_str = "https://api.500px.com/v1/photos/search";
 

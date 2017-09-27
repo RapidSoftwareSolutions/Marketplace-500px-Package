@@ -2351,7 +2351,7 @@
           "name": "reason",
           "type": "Select",
           "options": [
-            "0",
+
             "1",
             "2",
             "3",
@@ -4282,7 +4282,10 @@
             "info": "Single gallery"
           },
           "info": "list of galleries to reposition",
-          "required": true
+          "required": true,
+          "vendorSchema": {
+            "format": "toString:{,}"
+          }
         }
       ],
       "vendorRequest": {

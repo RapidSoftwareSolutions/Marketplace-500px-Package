@@ -107,6 +107,7 @@ $app->post('/api/500px/uploadPhoto', function ($request, $response) {
     } catch (\GuzzleHttp\Exception\ClientException $exception) {
 
         $responseBody = $exception->getResponse()->getBody()->getContents();
+        $responseBody = $exception->getMessage();
         if (empty(json_decode($responseBody))) {
             $out = $responseBody;
         } else {

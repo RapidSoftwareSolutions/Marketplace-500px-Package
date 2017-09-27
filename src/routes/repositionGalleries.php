@@ -20,6 +20,7 @@ $app->post('/api/500px/repositionGalleries', function ($request, $response) {
 
     $data = \Models\Params::createParams($requiredParams, $optionalParams, $post_data['args']);
 
+    $data['galleries'] = \Models\Params::toString($data['galleries'], ',');
 
     $stack = GuzzleHttp\HandlerStack::create();
     $middleware = new GuzzleHttp\Subscriber\Oauth\Oauth1(['consumer_key' => $data['apiKey'], 'consumer_secret' => $data['apiSecret'], 'token' => $post_data['args']['token'], 'token_secret' => $post_data['args']['tokenSecret']]);
@@ -29,9 +30,8 @@ $app->post('/api/500px/repositionGalleries', function ($request, $response) {
 
 
     $requestParams = \Models\Params::createRequestBody($data, $bodyParams);
+
     $requestParams['headers'] = [];
-
-
     try {
         $resp = $client->put($query_str, $requestParams);
         $responseBody = $resp->getBody()->getContents();
