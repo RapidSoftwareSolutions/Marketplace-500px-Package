@@ -15,7 +15,7 @@ $app->post('/api/500px/listGalleries', function ($request, $response) {
     $requiredParams = ['apiKey' => 'apiKey', 'apiSecret' => 'apiSecret', 'token' => 'token', 'tokenSecret' => 'tokenSecret', 'userId' => 'userId'];
     $optionalParams = ['sort' => 'sort', 'includeCover' => 'include_cover', 'page' => 'page', 'perPage' => 'rpp', 'coverSize' => 'cover_size', 'sortDirection' => 'sort_direction', 'privacy' => 'privacy', 'kinds' => 'kinds'];
     $bodyParams = [
-        'query' => ['sort', 'include_cover', 'cover_size', 'page', 'rpp', 'sort_direction', 'privacy']
+        'query' => ['sort', 'include_cover', 'cover_size', 'page', 'rpp', 'sort_direction', 'privacy', 'kinds']
     ];
 
     $data = \Models\Params::createParams($requiredParams, $optionalParams, $post_data['args']);

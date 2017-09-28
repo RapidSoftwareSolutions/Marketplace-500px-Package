@@ -65,6 +65,51 @@ Returns a listing of twenty (up to one hundred) photos for a specified photo str
 | personalizedCategories| Select     |  If set to true, returns photos from personalized categories for the currently logged in user and authenticated request, if personalization is available for the current user.
 | tags                  | Select     | If set to 1, returns an array of tags for the photo.
 
+```
+Global features
+
+'popular' — Return photos in Popular. Default sort: rating.
+'highest_rated' — Return photos that have been in Popular. Default sort: highest_rating.
+'upcoming' — Return photos in Upcoming. Default sort: time when Upcoming was reached.
+'editors' — Return photos in Editors' Choice. Default sort: time when selected by an editor.
+'fresh_today' — Return photos in Fresh Today. Default sort: time when reached fresh.
+'fresh_yesterday' — Return photos in Fresh Yesterday. Default sort: same as 'fresh_today'.
+'fresh_week' — Return photos in Fresh This Week. Default sort: same as 'fresh_today'.
+```
+```
+ID	Category
+0	Uncategorized
+10	Abstract
+29	Aerial New!
+11	Animals
+5	Black and White
+1	Celebrities
+9	City and Architecture
+15	Commercial
+16	Concert
+20	Family
+14	Fashion
+2	Film
+24	Fine Art
+23	Food
+3	Journalism
+8	Landscapes
+12	Macro
+18	Nature
+30	Night New!
+4	Nude
+7	People
+19	Performing Arts
+17	Sport
+6	Still Life
+21	Street
+26	Transportation New!
+13	Travel
+22	Underwater
+27	Urban Exploration New!
+25	Wedding New!
+```
+
 ## 500px.searchPhotosByTerm
 Returns a listing of twenty (up to one hundred) photos from search results for a specified term
 
@@ -87,8 +132,42 @@ Returns a listing of twenty (up to one hundred) photos from search results for a
 | licenseTypes     | List       | [Types of licenses](https://github.com/500px/api-documentation/blob/master/basics/formats_and_terms.md#license-types)
 | sort             | Select     | Sort photos in the specified order.
 
+```
+ID	Category
+0	Uncategorized
+10	Abstract
+29	Aerial New!
+11	Animals
+5	Black and White
+1	Celebrities
+9	City and Architecture
+15	Commercial
+16	Concert
+20	Family
+14	Fashion
+2	Film
+24	Fine Art
+23	Food
+3	Journalism
+8	Landscapes
+12	Macro
+18	Nature
+30	Night New!
+4	Nude
+7	People
+19	Performing Arts
+17	Sport
+6	Still Life
+21	Street
+26	Transportation New!
+13	Travel
+22	Underwater
+27	Urban Exploration New!
+25	Wedding New!
+```
+
 ## 500px.searchPhotosByTag
-Returns a listing of twenty (up to one hundred) photos from search results for a specified term
+Returns a listing of twenty (up to one hundred) photos from search results for a specified tag
 
 | Field            | Type       | Description
 |------------------|------------|----------
@@ -108,6 +187,40 @@ Returns a listing of twenty (up to one hundred) photos from search results for a
 | imageSize        | Select     | The photo size(s) to be returned. [list of formats](https://github.com/500px/api-documentation/blob/master/basics/formats_and_terms.md#image-urls-and-image-sizes)
 | licenseTypes     | List       | [Types of licenses](https://github.com/500px/api-documentation/blob/master/basics/formats_and_terms.md#license-types)
 | sort             | Select     | Sort photos in the specified order.
+
+```
+ID	Category
+0	Uncategorized
+10	Abstract
+29	Aerial New!
+11	Animals
+5	Black and White
+1	Celebrities
+9	City and Architecture
+15	Commercial
+16	Concert
+20	Family
+14	Fashion
+2	Film
+24	Fine Art
+23	Food
+3	Journalism
+8	Landscapes
+12	Macro
+18	Nature
+30	Night New!
+4	Nude
+7	People
+19	Performing Arts
+17	Sport
+6	Still Life
+21	Street
+26	Transportation New!
+13	Travel
+22	Underwater
+27	Urban Exploration New!
+25	Wedding New!
+```
 
 ## 500px.searchPhotosByGeo
 Returns a listing of twenty (up to one hundred) photos from search results for a specified geo
@@ -132,6 +245,40 @@ Returns a listing of twenty (up to one hundred) photos from search results for a
 | imageSize        | Select     | The photo size(s) to be returned. [list of formats](https://github.com/500px/api-documentation/blob/master/basics/formats_and_terms.md#image-urls-and-image-sizes)
 | licenseTypes     | List       | [Types of licenses](https://github.com/500px/api-documentation/blob/master/basics/formats_and_terms.md#license-types)
 | sort             | Select     | Sort photos in the specified order.
+
+```
+ID	Category
+0	Uncategorized
+10	Abstract
+29	Aerial New!
+11	Animals
+5	Black and White
+1	Celebrities
+9	City and Architecture
+15	Commercial
+16	Concert
+20	Family
+14	Fashion
+2	Film
+24	Fine Art
+23	Food
+3	Journalism
+8	Landscapes
+12	Macro
+18	Nature
+30	Night New!
+4	Nude
+7	People
+19	Performing Arts
+17	Sport
+6	Still Life
+21	Street
+26	Transportation New!
+13	Travel
+22	Underwater
+27	Urban Exploration New!
+25	Wedding New!
+```
 
 ## 500px.getSinglePhoto
 Returns detailed information of a single photo.
@@ -511,6 +658,40 @@ Returns a listing of twenty (up to one hundred) photos in the given gallery.
 | includeMissing   | Select     | If set to 1, returns ids of photos that have been deleted, made private or the owner of the photo is deactivated.
 | includeGeo       | Select     | If set to 1, returns location information about the photo.
 | includeLicensing | Select     | If set to 1, returns licensing information for the photo.
+
+```
+ID	Category
+0	Uncategorized
+10	Abstract
+29	Aerial New!
+11	Animals
+5	Black and White
+1	Celebrities
+9	City and Architecture
+15	Commercial
+16	Concert
+20	Family
+14	Fashion
+2	Film
+24	Fine Art
+23	Food
+3	Journalism
+8	Landscapes
+12	Macro
+18	Nature
+30	Night New!
+4	Nude
+7	People
+19	Performing Arts
+17	Sport
+6	Still Life
+21	Street
+26	Transportation New!
+13	Travel
+22	Underwater
+27	Urban Exploration New!
+25	Wedding New!
+```
 
 ## 500px.getGalleryShareUrl
 Returns a sharable private URL for the given gallery.

@@ -15,7 +15,7 @@ $app->post('/api/500px/searchPhotosByTerm', function ($request, $response) {
     $requiredParams = ['apiKey'=>'apiKey','apiSecret'=>'apiSecret','token'=>'token','tokenSecret'=>'tokenSecret','term'=>'term'];
     $optionalParams = ['includeCategories'=>'only','feature'=>'was_featured_type','excludeCategories'=>'exclude','excludeNude'=>'exclude_nude','page'=>'page','perPage'=>'rpp','tags'=>'tags','userId'=>'user_id','imageSize'=>'image_size','licenseTypes'=>'license_type','sort'=>'sort'];
     $bodyParams = [
-       'query' => ['license_type','image_size','user_id','tags','rpp','page','exclude_nude','exclude','was_featured_type','term','only']
+       'query' => ['license_type','image_size','user_id','tags','rpp','page','exclude_nude','exclude','was_featured_type','term','only', "sort"]
     ];
 
     $data = \Models\Params::createParams($requiredParams, $optionalParams, $post_data['args']);

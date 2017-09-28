@@ -288,7 +288,7 @@
             "440",
             "600"
           ],
-          "info": "The photo size(s) to be returned. [list of formats](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#image-urls-and-image-sizes)",
+          "info": "The photo size(s) to be returned.",
           "required": false,
           "vendorSchema": {
             "name": "image_size"
@@ -523,7 +523,7 @@
             "440",
             "600"
           ],
-          "info": "The photo size(s) to be returned. [list of formats](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#image-urls-and-image-sizes)",
+          "info": "The photo size(s) to be returned",
           "required": false,
           "vendorSchema": {
             "name": "image_size"
@@ -548,7 +548,7 @@
             ],
             "info": "License type id"
           },
-          "info": "[Types of licenses](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#license-types)",
+          "info": "Types of licenses",
           "required": false,
           "vendorSchema": {
             "name": "license_type",
@@ -589,7 +589,8 @@
               "exclude",
               "was_featured_type",
               "term",
-              "only"
+              "only",
+              "sort"
             ]
           }
         ],
@@ -613,7 +614,7 @@
     },
     {
       "name": "searchPhotosByTag",
-      "description": "Returns a listing of twenty (up to one hundred) photos from search results for a specified term",
+      "description": "Returns a listing of twenty (up to one hundred) photos from search results for a specified tag",
       "args": [
         {
           "name": "apiKey",
@@ -752,7 +753,7 @@
             "440",
             "600"
           ],
-          "info": "The photo size(s) to be returned. [list of formats](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#image-urls-and-image-sizes)",
+          "info": "The photo size(s) to be returned",
           "required": false,
           "vendorSchema": {
             "name": "image_size"
@@ -777,7 +778,7 @@
             ],
             "info": "License type id"
           },
-          "info": "[Types of licenses](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#license-types)",
+          "info": "Types of licenses",
           "required": false,
           "vendorSchema": {
             "name": "license_type",
@@ -818,7 +819,8 @@
               "exclude",
               "was_featured_type",
               "tag",
-              "only"
+              "only",
+              "sort"
             ]
           }
         ],
@@ -997,7 +999,7 @@
             "440",
             "600"
           ],
-          "info": "The photo size(s) to be returned. [list of formats](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#image-urls-and-image-sizes)",
+          "info": "The photo size(s) to be returned",
           "required": false,
           "vendorSchema": {
             "name": "image_size"
@@ -1022,7 +1024,7 @@
             ],
             "info": "License type id"
           },
-          "info": "[Types of licenses](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#license-types)",
+          "info": "Types of licenses",
           "required": false,
           "vendorSchema": {
             "name": "license_type",
@@ -1066,7 +1068,8 @@
               "exclude",
               "was_featured_type",
               "term",
-              "only"
+              "only",
+              "sort"
             ]
           }
         ],
@@ -1129,12 +1132,9 @@
             "1",
             "2",
             "3",
-            "100",
-            "200",
-            "440",
-            "600"
+            "4"
           ],
-          "info": "The photo size(s) to be returned. [list of formats](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#image-urls-and-image-sizes)",
+          "info": "The photo size(s) to be returned",
           "required": false,
           "vendorSchema": {
             "name": "image_size"
@@ -1255,7 +1255,7 @@
           "info": "Return the specified page from the comments listing. Page numbers are 1-based.",
           "required": false,
           "vendorSchema": {
-            "name": "comments_page"
+            "name": "page"
           }
         }
       ],
@@ -1267,7 +1267,7 @@
             "type": "query",
             "parameters": [
               "nested",
-              "comments_page"
+              "page"
             ]
           }
         ],
@@ -1570,7 +1570,7 @@
             "7",
             "8"
           ],
-          "info": "[Types of licenses](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#license-types)",
+          "info": "Types of licenses",
           "required": false,
           "vendorSchema": {
             "name": "license_type"
@@ -3284,7 +3284,8 @@
               "page",
               "rpp",
               "sort_direction",
-              "privacy"
+              "privacy",
+              "kinds"
             ]
           }
         ],
@@ -3635,7 +3636,7 @@
             "440",
             "600"
           ],
-          "info": "The photo size(s) to be returned. [list of formats](https:\/\/github.com\/500px\/api-documentation\/blob\/master\/basics\/formats_and_terms.md#image-urls-and-image-sizes)",
+          "info": "The photo size(s) to be returned",
           "required": false,
           "vendorSchema": {
             "name": "image_size"

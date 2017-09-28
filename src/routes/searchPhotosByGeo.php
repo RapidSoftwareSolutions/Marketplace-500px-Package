@@ -15,7 +15,7 @@ $app->post('/api/500px/searchPhotosByGeo', function ($request, $response) {
     $requiredParams = ['apiKey'=>'apiKey','apiSecret'=>'apiSecret','token'=>'token','tokenSecret'=>'tokenSecret','geo'=>'geo','radius'=>'radius','units'=>'units'];
     $optionalParams = ['includeCategories'=>'only','feature'=>'was_featured_type','excludeCategories'=>'exclude','excludeNude'=>'exclude_nude','page'=>'page','perPage'=>'rpp','tags'=>'tags','userId'=>'user_id','imageSize'=>'image_size','licenseTypes'=>'license_type','sort'=>'sort'];
     $bodyParams = [
-       'query' => ['geo','radius','units','license_type','image_size','user_id','tags','rpp','page','exclude_nude','exclude','was_featured_type','term','only']
+       'query' => ['geo','radius','units','license_type','image_size','user_id','tags','rpp','page','exclude_nude','exclude','was_featured_type','term','only', 'sort']
     ];
 
     $data = \Models\Params::createParams($requiredParams, $optionalParams, $post_data['args']);
